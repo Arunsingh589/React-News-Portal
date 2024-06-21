@@ -18,11 +18,11 @@ const NewsComponent = () => {
       try {
         const response = await axios.get('https://newsapi.org/v2/top-headlines', {
           params: {
-            country: 'us',
+            country: 'in',
             category: category,
             page: page,
             pageSize: pageSize,
-            apiKey: '227f37615b79402ab24295c41047ace2',
+            apiKey: '714ef9b8a6ef47d19b4bda6f4f0d100f',
           },
         });
         setArticles(response.data.articles);

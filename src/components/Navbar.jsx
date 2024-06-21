@@ -10,22 +10,15 @@ const Navbar = () => {
 
   useEffect(() => {
     const updateBookmarkCount = () => {
-      try {
-        const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
-        setBookmarkCount(savedArticles.length);
-      } catch (error) {
-        console.error('Error accessing localStorage:', error);
-        setBookmarkCount(0); // Reset to 0 if there's an error
-      }
+      const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
+      setBookmarkCount(savedArticles.length);
     };
 
     updateBookmarkCount();
 
     window.addEventListener('storage', updateBookmarkCount);
-    window.addEventListener('bookmark-update', updateBookmarkCount);
     return () => {
       window.removeEventListener('storage', updateBookmarkCount);
-      window.removeEventListener('bookmark-update', updateBookmarkCount);
     };
   }, []);
 
