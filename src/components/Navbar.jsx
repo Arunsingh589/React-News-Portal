@@ -10,16 +10,22 @@ const Navbar = () => {
 
   useEffect(() => {
     const updateBookmarkCount = () => {
-      const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
-      setBookmarkCount(savedArticles.length);
+      try {
+        const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
+        setBookmarkCount(savedArticles.length);
+      } catch (error) {
+        console.error('Error accessing localStorage:', error);
+        setBookmarkCount(0); // Reset to 0 if there's an error
+      }
     };
 
     updateBookmarkCount();
-    const handleBookmarkUpdate = () => updateBookmarkCount();
 
-    window.addEventListener('bookmark-update', handleBookmarkUpdate);
+    window.addEventListener('storage', updateBookmarkCount);
+    window.addEventListener('bookmark-update', updateBookmarkCount);
     return () => {
-      window.removeEventListener('bookmark-update', handleBookmarkUpdate);
+      window.removeEventListener('storage', updateBookmarkCount);
+      window.removeEventListener('bookmark-update', updateBookmarkCount);
     };
   }, []);
 
@@ -37,7 +43,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow p-4 flex items-center justify-between">
-      <Link to={'/'} className="text-xl font-bold cursor-pointer">News Portal</Link>
+      <div className="text-xl font-bold">News Portal</div>
       <div className="flex-1 mx-4">
         <form onSubmit={handleSearchSubmit}>
           <input

@@ -7,11 +7,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const NewsComponent = () => {
-  const [category, setCategory] = useState('general'); 
+  const [category, setCategory] = useState('general'); // Default category
   const [articles, setArticles] = useState([]);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const pageSize = 10; 
+  const pageSize = 10; // Number of articles per page
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -37,19 +37,19 @@ const NewsComponent = () => {
 
   const handleCategoryChange = (newCategory) => {
     setCategory(newCategory);
-    setPage(1); 
+    setPage(1); // Reset to first page when category changes
   };
 
   const handleSaveNews = (article) => {
     const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
-    if (!savedArticles.some(saved => saved.title === article.title)) {
-      savedArticles.push(article);
-      localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
-      toast.success('News saved!');
-      window.dispatchEvent(new CustomEvent('bookmark-update'));
-    } else {
-      toast.info('News already saved.');
+    if (savedArticles.some(saved => saved.title === article.title)) {
+      toast.error('News already saved!');
+      return;
     }
+    savedArticles.push(article);
+    localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
+    toast.success('News saved!');
+    window.dispatchEvent(new Event('storage')); // To update the count in Navbar
   };
 
   const handlePageChange = (newPage) => {
@@ -60,11 +60,7 @@ const NewsComponent = () => {
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen mt-8">
-      <ToastContainer
-          className={"w-[240px] md:w-[300px]  "}
-          position="top-right"
-          autoClose={1500}
-      />
+      <ToastContainer />
       <h1 className="text-2xl md:text-4xl mb-6 text-center">Top Headlines</h1>
 
       {/* Category Selection Buttons */}

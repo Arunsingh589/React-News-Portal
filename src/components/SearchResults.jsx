@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const SearchResults = () => {
   const [articles, setArticles] = useState([]);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
 
@@ -32,27 +33,54 @@ const SearchResults = () => {
     }
   }, [query]);
 
+  useEffect(() => {
+    const updateBookmarkCount = () => {
+      try {
+        const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
+        setBookmarkCount(savedArticles.length);
+      } catch (error) {
+        console.error('Error accessing localStorage:', error);
+        setBookmarkCount(0); // Reset to 0 if there's an error
+      }
+    };
+
+    updateBookmarkCount();
+
+    window.addEventListener('storage', updateBookmarkCount);
+    window.addEventListener('bookmark-update', updateBookmarkCount);
+    return () => {
+      window.removeEventListener('storage', updateBookmarkCount);
+      window.removeEventListener('bookmark-update', updateBookmarkCount);
+    };
+  }, []);
+
   const handleSaveNews = (article) => {
-    const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
-    if (savedArticles.some(saved => saved.title === article.title)) {
-      toast.error('News already saved!');
-      return;
+    try {
+      const savedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
+      if (savedArticles.some(saved => saved.title === article.title)) {
+        toast.error('News already saved!');
+        return;
+      }
+      savedArticles.push(article);
+      localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
+      toast.success('News saved!');
+      setBookmarkCount(savedArticles.length);
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+      toast.error('Failed to save news. Please try again.');
     }
-    savedArticles.push(article);
-    localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
-    toast.success('News saved!');
   };
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen mt-8">
-         <Link to="/" className="flex items-center text-gray-600 mb-4 hover:text-gray-900">
+      <Link to="/" className="flex items-center text-gray-600 mb-4 hover:text-gray-900">
         <FaChevronLeft className="h-6 w-6 mr-1" />
         Back to News
       </Link>
       <ToastContainer
-      className={"w-[240px] md:w-[300px]  "}
-      position="top-right"
-      autoClose={1500}
+        className={"w-[240px] md:w-[300px]  "}
+        position="top-right"
+        autoClose={1500}
       />
       <h1 className="text-2xl md:text-4xl mb-6 text-center">Search Results for "{query}"</h1>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
