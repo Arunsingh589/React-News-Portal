@@ -22,7 +22,7 @@ function App() {
           <Route path="/" element={<NewsComponent bookmark={bookmark} setBookmark={setBookmark} />} />
           <Route path="/news/:articleIndex" element={<NewsDetail />} />
           <Route path="/bookmarks" element={<BookmarkPage />} />
-          {/* <Route path="/search" element={<SearchResults />} /> */}
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </div>
     </Router>

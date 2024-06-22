@@ -22,29 +22,29 @@ const Navbar = () => {
     };
   }, []);
 
-  // const handleSearchChange = (e) => {
-  //   setSearchTerm(e.target.value);
-  // };
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-  // const handleSearchSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (searchTerm.trim()) {
-  //     navigate(`/search?query=${searchTerm}`);
-  //     setSearchTerm('');
-  //   }
-  // };
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?query=${searchTerm}`);
+      setSearchTerm('');
+    }
+  };
 
   return (
     <nav className="bg-white shadow p-4 flex items-center justify-between">
       <div className="text-xl font-bold">News Portal</div>
       <div className="flex-1 mx-4">
-        <form >
+        <form onSubmit={handleSearchSubmit}>
           <input
             type="text"
             placeholder="Search..."
             className="w-full p-2 border rounded"
-            // value={searchTerm}
-            // onChange={handleSearchChange}
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
         </form>
       </div>
