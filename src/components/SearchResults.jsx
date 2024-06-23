@@ -15,7 +15,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://newsapi.org/v2/everything', {
+        const response = await axios.get('http://newsapi.org/v2/everything', {
           params: {
             q: query,
             apiKey: '714ef9b8a6ef47d19b4bda6f4f0d100f',

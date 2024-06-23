@@ -13,7 +13,7 @@ const NewsDetail = () => {
     if (!article) {
       const fetchArticle = async () => {
         try {
-          const response = await axios.get('https://newsapi.org/v2/top-headlines', {
+          const response = await axios.get('http://newsapi.org/v2/top-headlines', {
             params: {
               country: 'in',
               apiKey: '714ef9b8a6ef47d19b4bda6f4f0d100f',

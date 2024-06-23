@@ -16,7 +16,7 @@ const NewsComponent = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://newsapi.org/v2/top-headlines', {
+        const response = await axios.get('http://newsapi.org/v2/top-headlines', {
           params: {
             country: 'in',
             category: category,
