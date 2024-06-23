@@ -1,16 +1,26 @@
-// BookmarkPage.js
 import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaTrashAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const BookmarkPage = () => {
   const [savedArticles, setSavedArticles] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedArticles')) || [];
     setSavedArticles(saved);
+
+    const handleStorageChange = () => {
+      const updatedArticles = JSON.parse(localStorage.getItem('savedArticles')) || [];
+      setSavedArticles(updatedArticles);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleRemoveArticle = (indexToRemove) => {
@@ -18,18 +28,24 @@ const BookmarkPage = () => {
     setSavedArticles(updatedArticles);
     localStorage.setItem('savedArticles', JSON.stringify(updatedArticles));
     toast.success('News removed!');
+    window.dispatchEvent(new Event('storage')); // Dispatch storage event
   };
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen mt-8">
-       <Link to="/" className="flex items-center text-gray-600 mb-4 hover:text-gray-900">
+      <button 
+        onClick={() => navigate(-1)} 
+        className="flex items-center text-gray-600 mb-4 hover:text-gray-900" 
+        title="Back to News"
+      >
         <FaChevronLeft className="h-6 w-6 mr-1" />
         Back to News
-      </Link>
+      </button>
       <ToastContainer
-      className={"w-[240px] md:w-[300px]  "}
-      position="top-right"
-      autoClose={1500} />
+        className={"w-[240px] md:w-[300px]"}
+        position="top-right"
+        autoClose={1500}
+      />
       <h1 className="text-2xl md:text-4xl mb-6 text-center">Bookmarked Articles</h1>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {savedArticles.length > 0 ? (
